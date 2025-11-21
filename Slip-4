@@ -1,0 +1,30 @@
+Q.1 Write a Java Program to implement Adapter pattern for Enumeration iterator
+
+Q.2 Write a program to connect with the available Wi-Fi using Arduino.
+
+#include <WiFiNINA.h>
+const char* ssid = "WiFi name";
+const char* password = "secret password";
+void setup() {
+ Serial.begin(9600);
+ // Check for WiFi module
+ if (WiFi.status() == WL_NO_MODULE) {
+ Serial.println("WiFi module not found"); 
+while (true); // Halt if no WiFi module is found
+ }
+ // AƩempt to connect to WiFi
+ Serial.print("ConnecƟng to WiFi...");
+ WiFi.begin(ssid, password);
+ // Wait for connecƟon
+ while (WiFi.status() != WL_CONNECTED) {
+ Serial.print("."); 
+ delay(500);
+ }
+ Serial.println("\nWiFi connected");
+ Serial.print("IP address: ");
+ Serial.println(WiFi.localIP());
+}
+void loop() { 
+// Your main code here
+} 
+
