@@ -1,0 +1,123 @@
+Q.1 Write a Java Program to implement I/O Decorator for converting uppercase letters to lower case letters. 
+
+a)LowerCaseInputStream .java
+import java.io.*;
+public class LowerCaseInputStream extends FilterInputStream {
+ public LowerCaseInputStream(InputStream in) {
+ super(in);
+ }
+ @Override
+ public int read() throws IOException {
+ int c = super.read();
+ return (c == -1 ? c : Character.toLowerCase((char)c));
+ }
+ @Override
+public int read(byte[] b, int off, int len) throws IOException {
+ int result = super.read(b, off, len);
+ for (int i = off; i < off + result; i++) {
+ b[i] = (byte) Character.toLowerCase((char) b[i]);
+ }
+ return result;
+ }
+}
+b)InputTest.java(Run this file)
+import java.io.*;
+public class InputTest {
+ public static void main(String[] args) {
+ try {
+ InputStream in = new LowerCaseInputStream(
+ new BufferedInputStream(
+ new FileInputStream("test.txt")));
+ int c;
+ while ((c = in.read()) >= 0) {
+ System.out.print((char)c);
+ }
+ in.close();
+ } catch (IOException e) {
+ e.printStackTrace()
+}
+ }
+}
+c)test.txt
+Hello World!
+This Is A MIXED Case File.
+
+Q.2 	Write a program to sense the available networks using Arduino 
+
+Arduino Code:
+#include <SPI.h>
+#include <WiFi.h>
+void setup() {
+ // initialize serial and wait for the port to open:
+ Serial.begin(9600);
+ while (!Serial);
+ // iniƟalize WiFi
+ if (WiFi.status() == WL_NO_SHIELD) { 
+Serial.println("WiFi shield not present");
+ while (true); // don't conƟnue
+ }
+ // aƩempt to connect to WiFi (if required)
+ Serial.println("IniƟalizing WiFi...");
+ printMacAddress();
+ // scan for exisƟng networks:
+Serial.println("Scanning available networks...");
+ listNetworks();
+}
+void loop() {
+ delay(10000);
+ // scan for exisƟng networks:
+ Serial.println("Scanning available networks...");
+ listNetworks();
+}
+void printMacAddress() {
+ // the MAC address of your WiFi shield
+ byte mac[6];
+ WiFi.macAddress(mac);
+ // print the MAC address in the correct format:
+ Serial.print("MAC Address: ");
+ for (int i = 5; i >= 0; i--) {
+ if (mac[i] < 16) Serial.print("0"); // leading zero if necessary
+ Serial.print(mac[i], HEX);
+ if (i > 0) Serial.print(":");
+ }
+ Serial.println(); 
+void listNetworks() {
+ // scan for nearby networks:
+ Serial.println("** Scan Networks **");
+ int numSsid = WiFi.scanNetworks();
+ // print the list of networks seen:
+ Serial.print("Number of available networks: ");
+ Serial.println(numSsid); 
+ // print the network number, name, signal strength, and
+encrypƟon type:
+ for (int thisNet = 0; thisNet < numSsid; thisNet++) {
+ Serial.print(thisNet);
+ Serial.print(": ");
+ Serial.print(WiFi.SSID(thisNet));
+ Serial.print(" | Signal: ");
+ Serial.print(WiFi.RSSI(thisNet));
+ Serial.print(" dBm | EncrypƟon: "); 
+// Print encrypƟon type in readable format
+ int encrypƟon = WiFi.encrypƟonType(thisNet);
+ switch (encrypƟon) {
+ case WIFI_AUTH_OPEN:
+ Serial.println("Open");
+ break;
+ case WIFI_AUTH_WEP:
+ Serial.println("WEP");
+ break;
+ case WIFI_AUTH_WPA_PSK:
+ Serial.println("WPA_PSK");
+ break;
+case WIFI_AUTH_WPA2_PSK:
+ Serial.println("WPA2_PSK");
+ break;
+ case WIFI_AUTH_WPA_WPA2_PSK:
+ Serial.println("WPA_WPA2_PSK");
+ break;
+ default:
+ Serial.println("Unknown");
+ break;
+ }
+ }
+} 
