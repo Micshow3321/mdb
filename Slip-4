@@ -1,110 +1,76 @@
-Q.1 Write a Java Program to implement Factory method for Pizza Store with createPizza(),
-orederPizza(), prepare(), Bake(), cut(), box(). Use this to create variety of pizza’s
-like NyStyleCheesePizza, ChicagoStyleCheesePizza etc.
-
-a) Pizza.java
-public abstract class Pizza {
- String name;
- String dough;
- String sauce;
- public void prepare() {
- System.out.println("Preparing " + name);
- }
-public void bake() {
- System.out.println("Baking " + name);
- }
- public void cut() {
- System.out.println("Cutting " + name);
- }
- public void box() {
- System.out.println("Boxing " + name);
- }
- public String getName() {
- return name;
- }
-}
-b)PizzaStore.java
-b)PizzaStore.java
-public abstract class PizzaStore {
- public Pizza orderPizza() {
- Pizza pizza = createPizza();
- pizza.prepare();
- pizza.bake();
- pizza.cut();
- pizza.box();
- return pizza;
- }
- protected abstract Pizza createPizza(); // Factory Method
-}
-c)NYPizzaStore.java
-public class NYPizzaStore extends PizzaStore {
- @Override
- protected Pizza createPizza() {
- return new NYStyleCheesePizza();
- }
-}
-d)ChicagoPizzaStore .java
-public class ChicagoPizzaStore extends PizzaStore {
- @Override
- protected Pizza createPizza() {
- return new ChicagoStyleCheesePizza();
- }
-}
-e)NYStyleCheesePizza .java
-public class NYStyleCheesePizza extends Pizza {
- public NYStyleCheesePizza() {
- name = "NY Style Cheese Pizza";
- dough = "Thin Crust Dough";
- sauce = "Marinara Sauce";
- }
- @Override
- public void cut() {
-System.out.println("Cutting the pizza into diagonal slices");
- }
-}
-f)ChicagoStyleCheesePizza .java
-public class ChicagoStyleCheesePizza extends Pizza {
- public ChicagoStyleCheesePizza() {
- name = "Chicago Style Deep Dish Cheese Pizza";
- dough = "Extra Thick Crust Dough";
- sauce = "Plum Tomato Sauce";
- }
-@Override
- public void cut() {
- System.out.println("Cutting the pizza into square slices");
- }
-}
-g)PizzaTestDrive .java(Run this file)
-public class PizzaTestDrive {
- public static void main(String[] args) {
- PizzaStore nyStore = new NYPizzaStore();
- PizzaStore chicagoStore = new ChicagoPizzaStore();
-System.out.println("Ordering a New York style pizza:");
- Pizza nyPizza = nyStore.orderPizza();
- System.out.println("Ordered a " + nyPizza.getName() + "\n");
- System.out.println("Ordering a Chicago style pizza:");
- Pizza chicagoPizza = chicagoStore.orderPizza();
- System.out.println("Ordered a " + chicagoPizza.getName());
- }
-}
-
-Q.2 Write a program to sense a finger when it is placed on the board Arduino
-
-#include <CapaciƟveSensor.h>
-const int touchPin = 2;
-const int ledPin = 3; // New LED pin
-const int touchThreshold = 50;
-CapaciƟveSensor touchSensor = CapaciƟveSensor(0, touchPin);
-void setup() {
- Serial.begin(9600);
- pinMode(ledPin, OUTPUT); // Set LED as output
-} 
-void loop() {
- long touchValue = touchSensor.capaciƟveSensor(30);
- if (touchValue >= touchThreshold) {
- Serial.println("Finger detected!");
- digitalWrite(ledPin, HIGH); // Turn on LED
- delay(1000); // wait to prevent mulƟple detecƟons
- digitalWrite(ledPin, LOW); // Turn off LED aŌer delay
- }
-}
+ Q.1. Write a python program to implement k-means algorithm on a mall_customers dataset. 
+ 
+import pandas as pd 
+import matplotlib.pyplot as plt 
+from sklearn.cluster import KMeans 
+from sklearn.preprocessing import StandardScaler 
+ 
+# Step 1: Load the dataset 
+# Replace 'mall_customers.csv' with the actual path to your dataset data = pd.read_csv('mall_customers.csv') 
+ 
+# Display the first few rows of the dataset 
+print("First few rows of the dataset:") print(data.head()) 
+ 
+# Step 2: Preprocess the data 
+# We'll select two features (e.g., 'Annual Income' and 'Spending Score') for clustering X = data[['Annual Income (k$)', 'Spending Score (1-100)']] 
+ 
+# Standardize the data for better clustering performance scaler = StandardScaler() 
+X_scaled = scaler.fit_transform(X) 
+ 
+# Step 3: Use the Elbow Method to find the optimal number of clusters 
+inertia = [] 
+K_range = range(1, 11) for k in K_range: 
+    kmeans = KMeans(n_clusters=k, random_state=42)     kmeans.fit(X_scaled)     inertia.append(kmeans.inertia_) 
+ 
+# Plot the Elbow curve plt.figure(figsize=(8, 4)) plt.plot(K_range, inertia, marker='o') plt.xlabel('Number of Clusters (K)') 
+plt.ylabel('Inertia') 
+plt.title('Elbow Method for Optimal K') plt.show() 
+ 
+# Based on the Elbow plot, choose the optimal number of clusters optimal_k = 5  # Adjust this based on the plot kmeans = KMeans(n_clusters=optimal_k, random_state=42) kmeans.fit(X_scaled) 
+ 
+# Step 4: Assign the clusters to the original data data['Cluster'] = kmeans.labels_ 
+ 
+# Display the first few rows of the dataset with cluster assignments print("\nDataset with Cluster Assignments:") print(data.head()) 
+ 
+# Step 5: Visualize the clusters plt.figure(figsize=(10, 6)) 
+plt.scatter(X_scaled[:, 0], X_scaled[:, 1], c=kmeans.labels_, cmap='viridis', marker='o', edgecolor='k') plt.xlabel('Annual Income (scaled)') 
+plt.ylabel('Spending Score (scaled)') plt.title('K-means Clustering of Mall Customers') plt.colorbar(label='Cluster') plt.show() 
+ 
+ 
+ 
+Q.2. Write a python program to Implement Simple Linear Regression for predicting house price. 
+ 
+import pandas as pd 
+import numpy as np 
+import matplotlib.pyplot as plt 
+from sklearn.model_selection import train_test_split 
+from sklearn.linear_model import LinearRegression 
+from sklearn.metrics import mean_squared_error, r2_score 
+ 
+# Step 1: Load the dataset 
+# Replace 'house_prices.csv' with the actual path to your dataset # Assume the dataset has columns 'SquareFootage' and 'Price' data = pd.read_csv('house_prices.csv') 
+ 
+# Display the first few rows of the dataset print("First few rows of the dataset:") print(data.head()) 
+ 
+# Step 2: Preprocess the data 
+# Check for null values and remove them if any print("\nChecking for null values:") print(data.isnull().sum()) data = data.dropna() 
+ 
+# Step 3: Define the feature (e.g., SquareFootage) and target (Price) variables X = data[['SquareFootage']]  # Feature (independent variable) y = data['Price']            # Target (dependent variable) 
+ 
+# Step 4: Split the dataset into training and testing sets 
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42) 
+ 
+# Step 5: Create and train the Simple Linear Regression model model = LinearRegression() model.fit(X_train, y_train) 
+ 
+# Step 6: Make predictions on the test set y_pred = model.predict(X_test) 
+ 
+# Step 7: Evaluate the model mse = mean_squared_error(y_test, y_pred) r2 = r2_score(y_test, y_pred) 
+ 
+print(f"\nMean Squared Error (MSE): {mse:.2f}") print(f"R-squared (R2) Score: {r2:.2f}") 
+ 
+# Display model coefficients print("\nModel Coefficients:") print(f"Slope (Coefficient for SquareFootage): {model.coef_[0]:.2f}") print(f"Intercept: {model.intercept_:.2f}") 
+ 
+# Step 8: Visualize the results plt.figure(figsize=(10, 6)) plt.scatter(X, y, color='blue', label='Actual Prices') plt.plot(X_test, y_pred, color='red', linewidth=2, label='Regression Line') plt.xlabel('Square Footage') plt.ylabel('House Price') plt.title('Simple Linear Regression for House Price Prediction') plt.legend() plt.show() 
+ 
+  
+ 
