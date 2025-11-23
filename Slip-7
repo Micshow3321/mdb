@@ -1,168 +1,69 @@
-Q.1 Write a Java Program to implement undo command to test Ceiling fan
-a)Command.java
-public interface Command {
- void execute();
- void undo();
-}
-b)CeilingFan.java
-public class CeilingFan {
- public static final int HIGH = 3;
- public static final int MEDIUM = 2;
- public static final int LOW = 1;
- public static final int OFF = 0;
- String location;
- int speed;
-public CeilingFan(String location) {
- this.location = location;
- speed = OFF;
- }
- public void high() {
- speed = HIGH;
- System.out.println(location + " ceiling fan is on HIGH");
- }
- public void medium() {
- speed = MEDIUM;
- System.out.println(location + " ceiling fan is on MEDIUM");
- }
- public void low() {
- speed = LOW;
- System.out.println(location + " ceiling fan is on LOW");
-}
- public void off() {
- speed = OFF;
- System.out.println(location + " ceiling fan is OFF");
- }
- public int getSpeed() {
- return speed;
- }
-}
-c)CeilingFanHighCommand.java
-public class CeilingFanHighCommand implements Command {
- CeilingFan ceilingFan;
- int prevSpeed;
- public CeilingFanHighCommand(CeilingFan ceilingFan) {
- this.ceilingFan = ceilingFan;
- }
- public void execute() {
- prevSpeed = ceilingFan.getSpeed();
- ceilingFan.high();
- }
- public void undo() {
- restorePreviousSpeed();
- }
- private void restorePreviousSpeed() {
- switch (prevSpeed) {
- case CeilingFan.HIGH: ceilingFan.high(); break;
- case CeilingFan.MEDIUM: ceilingFan.medium(); break;
- case CeilingFan.LOW: ceilingFan.low(); break;
- case CeilingFan.OFF: ceilingFan.off(); break;
- }
- }
-}
-d)CeilingFanMediumCommand.java
-public class CeilingFanMediumCommand implements Command {
- CeilingFan ceilingFan;
- int prevSpeed;
-public CeilingFanMediumCommand(CeilingFan ceilingFan) {
- this.ceilingFan = ceilingFan;
- }
- public void execute() {
- prevSpeed = ceilingFan.getSpeed();
- ceilingFan.medium();
- }
- public void undo() {
- restorePreviousSpeed();
- }
-private void restorePreviousSpeed() {
- switch (prevSpeed) {
- case CeilingFan.HIGH: ceilingFan.high(); break;
- case CeilingFan.MEDIUM: ceilingFan.medium(); break;
- case CeilingFan.LOW: ceilingFan.low(); break;
- case CeilingFan.OFF: ceilingFan.off(); break;
- }
- }
-}
-e)CeilingFanOffCommand.java
-public class CeilingFanOffCommand implements Command {
- CeilingFan ceilingFan;
- int prevSpeed;
- public CeilingFanOffCommand(CeilingFan ceilingFan) {
- this.ceilingFan = ceilingFan;
- }
- public void execute() {
- prevSpeed = ceilingFan.getSpeed();
- ceilingFan.off();
- }
-public void undo() {
- restorePreviousSpeed();
- }
- private void restorePreviousSpeed() {
- switch (prevSpeed) {
- case CeilingFan.HIGH: ceilingFan.high(); break;
- case CeilingFan.MEDIUM: ceilingFan.medium(); break;
- case CeilingFan.LOW: ceilingFan.low(); break;
- case CeilingFan.OFF: ceilingFan.off(); break;
- }
- }
-}
-f)RemoteControl.java
-public class RemoteControl {
- Command slot;
- Command undoCommand;
- public void setCommand(Command command) {
- slot = command;
- }
- public void buttonWasPressed() {
- if (slot != null) {
- slot.execute();
- undoCommand = slot;
- }
-}
- public void undoButtonWasPressed() {
- if (undoCommand != null) {
- undoCommand.undo();
- }
- }
-}
-g)RemoteControlTest.java(Run this file)
-public class RemoteControlTest {
- public static void main(String[] args) {
-RemoteControl remote = new RemoteControl();
-CeilingFan ceilingFan = new CeilingFan("Living Room");
-CeilingFanMediumCommand fanMedium = new
-CeilingFanMediumCommand(ceilingFan);
- CeilingFanHighCommand fanHigh = new
-CeilingFanHighCommand(ceilingFan);
- CeilingFanOffCommand fanOff = new
-CeilingFanOffCommand(ceilingFan);
-// Set fan to Medium
- remote.setCommand(fanMedium);
- remote.buttonWasPressed();
- // Set fan to High
- remote.setCommand(fanHigh);
- remote.buttonWasPressed();
- // Undo to Medium
- remote.undoButtonWasPressed();
- // Turn off fan
- remote.setCommand(fanOff);
- remote.buttonWasPressed();
- // Undo to High
- remote.undoButtonWasPressed();
- }
-}
-
-
-Q.2 Write a program for LDR to vary the light intensity of LED using
-Arduino.
-
-int sensor = A0;
-int output = 9;
-void setup() {
- pinMode(output, OUTPUT);
-}
-void loop() {
- int reading = analogRead(sensor);
- int bright = reading / 4;
-delay(500);
- analogWrite(output, bright);
-} 
+Q.1. Fit the simple linear regression model to Salary_positions.csv data. Predict the sa of level 11 and level 12 employees 
+ 
+import pandas as pd 
+import numpy as np 
+from sklearn.linear_model import LinearRegression 
+import matplotlib.pyplot as plt 
+ 
+# Step 1: Load the dataset 
+# Assuming Salary_positions.csv has columns 'Level' and 'Salary' data = pd.read_csv('Salary_positions.csv') 
+ 
+# Step 2: Preprocess the data # Inspect the data (optional) print(data.head()) 
+ 
+# Extracting the relevant columns 
+X = data[['Level']]  # Independent variable (employee level) y = data['Salary']   # Dependent variable (salary) 
+ 
+# Step 3: Fit the Simple Linear Regression Model model = LinearRegression() 
+model.fit(X, y) 
+ 
+# Step 4: Predict salary for level 11 and level 12 employees 
+levels = np.array([11, 12]).reshape(-1, 1)  # Reshape to match the model's input format predictions = model.predict(levels) 
+ 
+# Output the predictions print(f"Predicted salary for level 11 employee: ${predictions[0]:,.2f}") print(f"Predicted salary for level 12 employee: ${predictions[1]:,.2f}") 
+ 
+# Step 5: Plot the data and the regression line plt.scatter(X, y, color='blue')  # Plot the actual data points plt.plot(X, model.predict(X), color='red')  # Plot the regression line plt.title('Salary vs Level') plt.xlabel('Employee Level') plt.ylabel('Salary') plt.show() 
+ 
+ 
+Q.2. Write a python program to implement Naive Bayes on weather forecast dataset. [15 M] 
+ 
+ 
+# Import necessary libraries 
+import pandas as pd 
+from sklearn.model_selection import train_test_split 
+from sklearn.naive_bayes import GaussianNB 
+from sklearn.metrics import accuracy_score 
+from sklearn.preprocessing import LabelEncoder 
+ 
+# Step 1: Load the dataset 
+# Assuming the dataset is in CSV format 
+data = pd.read_csv('weather_forecast.csv') 
+ 
+# Step 2: Preprocess the data 
+# Convert categorical features into numeric using LabelEncoder label_encoder = LabelEncoder() 
+ 
+# Encoding categorical features data['Temperature'] = label_encoder.fit_transform(data['Temperature']) data['Humidity'] = label_encoder.fit_transform(data['Humidity']) data['Wind'] = label_encoder.fit_transform(data['Wind']) data['Outlook'] = label_encoder.fit_transform(data['Outlook']) 
+ 
+# Encoding the target label 
+data['PlayTennis'] = label_encoder.fit_transform(data['PlayTennis']) 
+ 
+# Step 3: Split the data into features (X) and target (y) X = data.drop('PlayTennis', axis=1)  # Features y = data['PlayTennis']  # Target label 
+ 
+# Step 4: Split the dataset into training and testing sets (80% train, 20% test) X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42) 
+ 
+# Step 5: Apply Naive Bayes Model (GaussianNB) model = GaussianNB()  # Using Gaussian Naive Bayes model.fit(X_train, y_train)  # Train the model 
+ 
+# Step 6: Make predictions on the test set 
+y_pred = model.predict(X_test) 
+ 
+# Step 7: Evaluate the model accuracy = accuracy_score(y_test, y_pred) 
+print(f'Accuracy of the Naive Bayes model: {accuracy * 100:.2f}%') 
+ 
+# Step 8: Make a sample prediction (e.g., a sunny day with weak wind, high humidity) sample = pd.DataFrame({'Temperature': [label_encoder.transform(['Mild'])[0]], 
+                       'Humidity': [label_encoder.transform(['High'])[0]], 
+                       'Wind': [label_encoder.transform(['Weak'])[0]], 
+                       'Outlook': [label_encoder.transform(['Sunny'])[0]]}) 
+ 
+prediction = model.predict(sample) prediction_label = label_encoder.inverse_transform(prediction) print(f'Prediction for the sample: {prediction_label[0]}') 
+ 
+ 
+   
