@@ -1,80 +1,85 @@
-Q.1. Write a python program to implement simple Linear Regression for predicting house price. First find all null values in a given dataset and remove them 
- 
-import pandas as pd 
-import numpy as np 
-import matplotlib.pyplot as plt 
-from sklearn.linear_model import LinearRegression 
-from sklearn.model_selection import train_test_split 
-from sklearn.metrics import mean_squared_error 
- 
-# Load the dataset 
-# Replace 'house_prices.csv' with your actual dataset file 
-data = pd.read_csv('house_prices.csv') 
- 
-# Display the first few rows of the dataset print("First few rows of the dataset:") print(data.head()) 
- 
-# Step 1: Find and remove null values print("\nChecking for null values:") print(data.isnull().sum())  # Check for null values in each column 
- 
-# Drop rows with any null values data = data.dropna() print("\nData after removing null values:") print(data.isnull().sum()) 
- 
-# Step 2: Select feature and target variable 
-# Assuming the dataset has a 'SquareFootage' column as the feature and 'Price' as the target variable 
-X = data[['SquareFootage']]  # Input feature (independent variable) y = data['Price']            # Target variable (dependent variable) 
- 
-# Step 3: Split the dataset into training and testing sets 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42) 
- 
-# Step 4: Create and train the Linear Regression model model = LinearRegression() model.fit(X_train, y_train) 
- 
-# Step 5: Make predictions on the test set y_pred = model.predict(X_test) 
- 
-# Step 6: Evaluate the model mse = mean_squared_error(y_test, y_pred) print(f"\nMean Squared Error: {mse}") 
- 
-# Display the slope (coefficient) and intercept of the regression line print(f"Slope (Coefficient): {model.coef_[0]}") print(f"Intercept: {model.intercept_}") 
- 
-# Step 7: Plot the data and the regression line plt.figure(figsize=(10, 6)) plt.scatter(X, y, color='blue', label='Data Points') plt.plot(X, model.predict(X), color='red', linewidth=2, label='Regression Line') plt.xlabel('Square Footage') plt.ylabel('Price') 
-plt.title('House Price Prediction using Linear Regression') plt.legend() plt.show() 
- 
- 
-Q.2. The data set refers to clients of a wholesale distributor. It includes the annual spending in monetary units on diverse product categories. Using data Wholesale customer dataset compute agglomerative clustering to find out annual spending clients in the same region 
- 
- 
-import pandas as pd 
-from sklearn.preprocessing import StandardScaler 
-from sklearn.cluster import AgglomerativeClustering 
-import matplotlib.pyplot as plt 
-import seaborn as sns 
-from scipy.cluster.hierarchy import dendrogram, linkage 
- 
-# Load the Wholesale Customers dataset 
-# Replace 'wholesale_customers.csv' with the path to your dataset data = pd.read_csv('wholesale_customers.csv') 
- 
-# Display the first few rows of the dataset print("First few rows of the dataset:") print(data.head()) 
- 
-# Step 1: Data Preprocessing 
-# Check for null values and handle them if present print("\nChecking for null values:") print(data.isnull().sum()) 
- 
-# Standardize the data scaler = StandardScaler() 
-data_scaled = scaler.fit_transform(data.iloc[:, 2:])  # Assuming Region and Channel are columns to exclude 
- 
-# Step 2: Apply Agglomerative Clustering 
-# We start with a linkage matrix for hierarchical clustering (for dendrogram visualization) 
-linked = linkage(data_scaled, method='ward') 
- 
-# Plot dendrogram for visualizing hierarchical clustering plt.figure(figsize=(10, 7)) 
-dendrogram(linked, orientation='top', distance_sort='ascending', show_leaf_counts=False) 
-plt.title('Dendrogram for Agglomerative Clustering') plt.xlabel('Clients') plt.ylabel('Euclidean distances') plt.show() 
- 
-# Step 3: Perform Agglomerative Clustering with an appropriate number of clusters # You can set n_clusters to the desired number of clusters based on the dendrogram n_clusters = 3  # Choose the optimal number from the dendrogram 
-agg_clustering = AgglomerativeClustering(n_clusters=n_clusters, affinity='euclidean', linkage='ward') 
-data['Cluster'] = agg_clustering.fit_predict(data_scaled) 
- 
-# Step 4: Visualize the clusters (Optional) plt.figure(figsize=(10, 6)) 
-sns.scatterplot(data=data, x='Grocery', y='Fresh', hue='Cluster', palette='viridis') plt.title('Agglomerative Clustering of Wholesale Customers') plt.xlabel('Annual Spending on Grocery') plt.ylabel('Annual Spending on Fresh') plt.show() 
- 
-# Step 5: Examine cluster characteristics print("\nCluster means for each feature:") print(data.groupby('Cluster').mean()) 
- 
- 
- 
+Q1.Build simple Neural network in Python from Keras
+
+->
+
+Bash
+pip install tensorflow
+Python
+import tensorflow as tf
+from tensorflow.keras import layers, models
+from tensorflow.keras.datasets import mnist
+# Load and preprocess the data
+(train_images, train_labels), (test_images, test_labels) =
+mnist.load_data()
+train_images = train_images.reshape((60000, 28, 28,
+1)).astype('float32') / 255
+test_images = test_images.reshape((10000, 28, 28, 1)).astype('float32')
+/ 255
+# Build the model
+model = models.Sequential()
+model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28,
+28, 1))) 
+model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(layers.Flatten())
+model.add(layers.Dense(64, activation='relu'))
+model.add(layers.Dense(10, activation='softmax')) 
+# Compile the model
+model.compile(optimizer='adam',
+ loss='sparse_categorical_crossentropy',
+ metrics=['accuracy'])
+# Train the model
+model.fit(train_images, train_labels, epochs=5, batch_size=64) 
+# Evaluate the model
+test_loss, test_acc = model.evaluate(test_images, test_labels)
+print(f'Test accuracy: {test_acc}') 
 
 
+Q2. Write a program to implement Fuzzy Operations 
+Union
+Intersection
+Complement
+
+->
+
+class FuzzySet:
+ def __init__(self, elements):
+ self.elements = elements # elements is a dictionary with element:
+membership value 
+def union(self, other_set):
+ union_elements = {}
+ for key in self.elements.keys():
+ union_elements[key] = max(self.elements[key],
+other_set.elements.get(key, 0))
+ for key in other_set.elements.keys():
+ if key not in union_elements:
+ union_elements[key] = max(other_set.elements[key],
+self.elements.get(key, 0))
+return FuzzySet(union_elements)
+ def intersection(self, other_set):
+ intersection_elements = {}
+ for key in self.elements.keys():
+ if key in other_set.element:
+intersection_elements[key] = min(self.elements[key],
+other_set.elements[key])
+ return FuzzySet(intersection_elements)
+ def complement(self):
+ complement_elements = {key: 1 - value for key, value in
+self.elements.items()} 
+return FuzzySet(complement_elements)
+ def __str__(self):
+ return str(self.elements) 
+# Example usage:
+setA = FuzzySet({'a': 0.5, 'b': 0.2, 'c': 0.8})
+setB = FuzzySet({'a': 0.7, 'b': 0.4, 'd': 0.6})
+print("Set A:", setA)
+print("Set B:", setB)
+unionAB = setA.union(setB)
+print("Union of A and B:", unionAB)
+intersectionAB = setA.intersection(setB)
+print("Intersection of A and B:", intersectionAB)
+complementA = setA.complement()
+print("Complement of A:", complementA) 
+ 
