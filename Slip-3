@@ -45,6 +45,10 @@ sigmoid_derivative(hidden_layer_output)
 print("Training complete") 
 print("Output from neural network after 10,000 epochs: \n", predicted_output) 
 
+
+
+
+
 Q2. Q2.Write a program to implement Max-Min Composition and Max-Product
 Composition.
 
