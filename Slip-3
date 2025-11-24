@@ -1,76 +1,105 @@
-Q.1. Write a python program to implement multiple Linear Regression for a house price dataset. Divide the dataset into training and testing data. 
- 
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression 
-from sklearn.metrics import mean_squared_error, r2_score 
- 
-# Step 1: Load the dataset 
-# Replace 'house_prices.csv' with the actual path to your dataset data = pd.read_csv('house_prices.csv') 
- 
-# Display the first few rows of the dataset to understand its structure print("First few rows of the dataset:") print(data.head()) 
- 
-# Step 2: Data Preprocessing 
-# Check for any null values and handle them print("\nChecking for null values:") print(data.isnull().sum()) 
- 
-# Drop rows with any missing values 
-data = data.dropna() 
- 
-# Select features and target variable 
-# Assume the dataset contains columns like 'SquareFootage', 'Bedrooms', 'Bathrooms', and 'Price' 
-# Adjust these column names based on the actual dataset features = ['SquareFootage', 'Bedrooms', 'Bathrooms']  # Independent variables X = data[features] y = data['Price']  # Dependent variable 
- 
-# Step 3: Split the data into training and testing sets 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42) 
- 
-# Step 4: Create and train the Multiple Linear Regression model model = LinearRegression() model.fit(X_train, y_train) 
- 
-# Step 5: Make predictions on the test set y_pred = model.predict(X_test) 
- 
-# Step 6: Evaluate the model mse = mean_squared_error(y_test, y_pred) r2 = r2_score(y_test, y_pred) 
- 
-print(f"\nMean Squared Error: {mse}") print(f"R-squared: {r2}") 
- 
-# Display the model's coefficients and intercept print("\nModel Coefficients:") for feature, coef in zip(features, model.coef_): 
-    print(f"{feature}: {coef}") print(f"Intercept: {model.intercept_}") 
- 
-# Step 7: Test a sample prediction (optional) sample_input = [[2000, 3, 2]]  # Example: 2000 sqft, 3 bedrooms, 2 bathrooms predicted_price = model.predict(sample_input) print(f"\nPredicted Price for {sample_input[0]}: {predicted_price[0]}") 
- 
- 
- 
-Q.2. Use dataset crash.csv is an accident survivor’s dataset portal for USA hosted by data.gov. The dataset contains passengers age and speed of vehicle (mph) at the time of impact and fate of passengers (1 for survived and 0 for not survived) after a crash. use logistic regression to decide if the age and speed can predict the survivability of the passengers. 
- 
- 
- 
-import pandas as pd 
-from sklearn.model_selection import train_test_split 
-from sklearn.linear_model import LogisticRegression 
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report 
- 
-# Step 1: Load the dataset 
-# Replace 'crash.csv' with the actual path to your dataset data = pd.read_csv('crash.csv') 
- 
-# Display the first few rows of the dataset print("First few rows of the dataset:") print(data.head()) 
- 
-# Step 2: Data Preprocessing 
-# Check for null values and handle them if any print("\nChecking for null values:") print(data.isnull().sum()) 
- 
-# Drop rows with any missing values data = data.dropna() 
- 
-# Step 3: Define features and target variable 
-# Assuming columns are named 'age', 'speed' for vehicle speed, and 'fate' for survivability 
-X = data[['age', 'speed']]  # Features: age and speed 
-y = data['fate']            # Target: 1 for survived, 0 for not survived 
- 
-# Step 4: Split the data into training and testing sets 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42) 
- 
-# Step 5: Create and train the Logistic Regression model model = LogisticRegression() model.fit(X_train, y_train) 
- 
-# Step 6: Make predictions on the test set y_pred = model.predict(X_test) 
- 
-# Step 7: Evaluate the model accuracy = accuracy_score(y_test, y_pred) conf_matrix = confusion_matrix(y_test, y_pred) class_report = classification_report(y_test, y_pred) print(f"\nModel Accuracy: {accuracy:.2f}") print("\nConfusion Matrix:") print(conf_matrix) print("\nClassification Report:") print(class_report) 
- 
-# Display model coefficients to understand feature influence print("\nModel Coefficients:") print(f"Age Coefficient: {model.coef_[0][0]}") print(f"Speed Coefficient: {model.coef_[0][1]}") print(f"Intercept: {model.intercept_[0]}") 
- 
- 
+Q1.Implement Back propagation in Python. 
+
+->
+
+import numpy as np
+def sigmoid(x):
+ return 1 / (1 + np.exp(-x))
+def sigmoid_derivative(x):
+ return x * (1 - x)
+inputs = np.array([[0, 0],
+ [0, 1],
+ [1, 0],
+ [1, 1]]) 
+expected_output = np.array([[0], [1], [1], [0]])
+input_layer_neurons = 2
+hidden_layer_neurons = 2
+output_neurons = 1
+hidden_weights = np.random.uniform(size=(input_layer_neurons,
+hidden_layer_neurons)) 
+hidden_bias = np.random.uniform(size=(1, hidden_layer_neurons))
+output_weights = np.random.uniform(size=(hidden_layer_neurons,
+output_neurons))
+output_bias = np.random.uniform(size=(1, output_neurons))
+lr = 0.1
+epochs = 10000 
+for epoch in range(epochs):
+ # Forward Propagation
+ hidden_layer_activation = np.dot(inputs, hidden_weights)
+ hidden_layer_activation += hidden_bias
+ hidden_layer_output = sigmoid(hidden_layer_activation)
+ output_layer_activation = np.dot(hidden_layer_output, output_weights)
+ output_layer_activation += output_bias
+ predicted_output = sigmoid(output_layer_activation) 
+# Backpropagation
+ error = expected_output - predicted_output
+ d_predicted_output = error * sigmoid_derivative(predicted_output)
+ error_hidden_layer = d_predicted_output.dot(output_weights.T)
+ d_hidden_layer = error_hidden_layer * 
+sigmoid_derivative(hidden_layer_output)
+ # Updating Weights and Biases
+ output_weights += hidden_layer_output.T.dot(d_predicted_output) * lr
+ output_bias += np.sum(d_predicted_output, axis=0, keepdims=True) * lr
+ hidden_weights += inputs.T.dot(d_hidden_layer) * lr
+ hidden_bias += np.sum(d_hidden_layer, axis=0, keepdims=True) * lr
+print("Training complete") 
+print("Output from neural network after 10,000 epochs: \n", predicted_output) 
+
+Q2. Q2.Write a program to implement Max-Min Composition and Max-Product
+Composition.
+
+
+->
+
+import numpy as np
+class FuzzyRelation:
+ def __init__(self, matrix):
+ self.matrix = np.array(matrix) 
+def max_min_composition(self, other):
+ result = np.zeros((self.matrix.shape[0], other.matrix.shape[1]))
+ for i in range(self.matrix.shape[0]):
+ for j in range(other.matrix.shape[1]): 
+result[i, j] = np.max(np.minimum(self.matrix[i, :],
+other.matrix[:, j]))
+ return FuzzyRelation(result)
+
+ def max_product_composition(self, other):
+ result = np.zeros((self.matrix.shape[0], other.matrix.shape[1]))
+ for i in range(self.matrix.shape[0]):
+ for j in range(other.matrix.shape[1]): 
+result[i, j] = np.max(self.matrix[i, :] * other.matrix[:, j])
+ return FuzzyRelation(result)
+ def __str__(self):
+ return str(self.matrix)
+def input_matrix(rows, cols):
+ matrix = []
+ for i in range(rows): 
+row = []
+ for j in range(cols):
+ value = float(input(f"Enter value for element [{i+1},{j+1}]: "))
+ row.append(value)
+ matrix.append(row)
+ return matrix
+# Example usage:
+print("Enter the size of the first relation matrix:")
+rows1 = int(input("Number of rows: "))
+cols1 = int(input("Number of columns: ")) 
+print("Enter the elements for the first relation matrix:")
+matrix1 = input_matrix(rows1, cols1)
+relation1 = FuzzyRelation(matrix1)
+print("Enter the size of the second relation matrix:")
+rows2 = int(input("Number of rows: "))
+cols2 = int(input("Number of columns: "))
+print("Enter the elements for the second relation matrix:")
+matrix2 = input_matrix(rows2, cols2) 
+relation2 = FuzzyRelation(matrix2)
+print("\nRelation 1:")
+print(relation1)
+print("Relation 2:")
+print(relation2)
+max_min_result = relation1.max_min_composition(relation2)
+print("\nMax-Min Composition:")
+print(max_min_result) 
+max_product_result = relation1.max_product_composition(relation2)
+print("\nMax-Product Composition:")
+print(max_product_result)
